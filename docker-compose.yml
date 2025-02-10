@@ -1,0 +1,46 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: forge_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: forge
+      MYSQL_USER: forge
+      MYSQL_PASSWORD: test123
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./nginx/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3307:3306"
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: forge_phpmyadmin
+    restart: always
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql
+      PMA_USER: forge
+      PMA_PASSWORD: test123
+      UPLOAD_LIMIT: 128M
+    ports:
+      - "8004:80"
+    depends_on:
+      - mysql
+
+  nginx:
+    build: ./nginx
+    container_name: forge_nginx
+    restart: always
+    volumes:
+      - ./html:/usr/share/nginx/html
+    ports:
+      - "8005:80"
+    depends_on:
+      - phpmyadmin
+
+volumes:
+  mysql_data:
+    driver: local
+

@@ -1,0 +1,7 @@
+CREATE DATABASE IF NOT EXISTS forge;
+CREATE DATABASE IF NOT EXISTS forge_staging;
+
+GRANT ALL PRIVILEGES ON forge.* TO 'forge'@'%';
+GRANT ALL PRIVILEGES ON forge_staging.* TO 'forge'@'%';
+
+FLUSH PRIVILEGES;
